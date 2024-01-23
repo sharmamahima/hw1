@@ -104,14 +104,72 @@
 .headers off
 
 -- Drop existing tables, so you'll start fresh each time this script is run.
--- TODO!
+
+DROP TABLE IF EXISTS Movies;
+DROP TABLE IF EXISTS Actors;
+DROP TABLE IF EXISTS Characters;
 
 -- Create new tables, according to your domain model
--- TODO!
+
+CREATE TABLE Movies (
+  movie_id INTEGER PRIMARY KEY,
+  title TEXT,
+  year_released INTEGER,
+  mpaa TEXT,
+  studio TEXT
+);
+
+CREATE TABLE Actors (
+  actor_id INTEGER PRIMARY KEY,
+  actor_name TEXT UNIQUE
+);
+
+CREATE TABLE Characters (
+  movie_id INTEGER,
+  actor_id INTEGER,
+  character_name TEXT,
+  FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
+  FOREIGN KEY (actor_id) REFERENCES Actors(actor_id)
+);
+
 
 -- Insert data into your database that reflects the sample data shown above
 -- Use hard-coded foreign key IDs when necessary
--- TODO!
+
+INSERT INTO Movies VALUES
+(0, 'Batman Begins', 2005, 'PG-13', 'Warner Bros.'),
+(1, 'The Dark Knight', 2008, 'PG-13', 'Warner Bros.'),
+(2, 'The Dark Knight Rises', 2012, 'PG-13', 'Warner Bros.');
+
+INSERT INTO Actors VALUES 
+(0, 'Christian Bale'),
+(1, 'Michael Caine'),
+(2, 'Liam Neeson'),
+(3, 'Katie Holmes'),
+(4, 'Gary Oldman'),
+(5, 'Heath Ledger'),
+(6, 'Aaron Eckhart'),
+(7, 'Maggie Gyllenhaal'),
+(8, 'Tom Hardy'),
+(9, 'Joseph Gordon-Levitt'),
+(10, 'Anne Hathaway');
+
+INSERT INTO Characters (movie_id, actor_id, character_name) VALUES
+(0, 0, 'Bruce Wayne'),
+(0, 1, 'Alfred'),
+(0, 2, 'Ra''s Al Ghul'),
+(0, 3, 'Rachel Dawes'),
+(0, 4, 'Commissioner Gordon'),
+(1, 0, 'Bruce Wayne'),
+(1, 5, 'Joker'),
+(1, 6, 'Harvey Dent'),
+(1, 1, 'Alfred'),
+(1, 7, 'Rachel Dawes'),
+(2, 0, 'Bruce Wayne'),
+(2, 4, 'Commissioner Gordon'),
+(2, 8, 'Bane'),
+(2, 9, 'John Blake'),
+(2, 10, 'Selina Kyle');
 
 -- Prints a header for the movies output
 .print "Movies"
@@ -119,7 +177,8 @@
 .print ""
 
 -- The SQL statement for the movies output
--- TODO!
+
+SELECT title, year_released, mpaa, studio FROM Movies;
 
 -- Prints a header for the cast output
 .print ""
@@ -129,4 +188,9 @@
 
 
 -- The SQL statement for the cast output
--- TODO!
+
+SELECT M.title, A.actor_name, C.character_name
+FROM 
+    Characters C
+    JOIN Movies M ON C.movie_id = M.movie_id
+    JOIN Actors A ON C.actor_id = A.actor_id;
